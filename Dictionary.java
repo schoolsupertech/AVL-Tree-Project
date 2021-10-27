@@ -42,13 +42,14 @@ public class Dictionary implements Comparable<Dictionary> {
 
     @Override
     public int compareTo(Dictionary o) {
-        switch(this.getE_Word().compareTo(o.getE_Word())) {
-            case -1:
-                return -1;
-            case 1:
-                return 1;
-            default:
-                return 0;
+        if(this.getE_Word().compareTo(o.getE_Word()) <= -1) {
+            return -1;
+        }
+        else if(this.getE_Word().compareTo(o.getE_Word()) == 0) {
+            return 0;
+        }
+        else {
+            return 1;
         }
     }
 }

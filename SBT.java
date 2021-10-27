@@ -13,36 +13,11 @@ import java.util.ArrayList;
  * @param <T>
  */
 public class SBT<T extends Comparable<T>> {
+    private final ArrayList<T> al = new ArrayList<>();
     private Node<T> root;
-    private int size;
     
     public SBT() {
         root = null;
-        size = 0;
-    }
-    
-// Search
-    public void search(T key) {
-        if(isEmpty()) {
-            System.out.println("Not found");
-        }
-        else {
-            find(root, key).printKey();
-        }
-    }
-    private Node<T> find(Node<T> head, T key) {
-        if(head.getRight() == null || head.getLeft() == null) {
-            return head;
-        }
-        if(head.equal(key)) {
-            return head;
-        }
-        else if(head.lessThan(key)) {
-            return find(head.getRight(), key);
-        }
-        else {
-            return find(head.getLeft(), key);
-        }
     }
     
 // Check root = empty
@@ -51,11 +26,11 @@ public class SBT<T extends Comparable<T>> {
     }
     
     public int size() {
-        return this.size;
+        return al.size();
     }
     
-    public int get(int index) {
-        return index;
+    public T get(int index) {
+        return al.get(index);
     }
     
     private int height(Node<T> n) {
@@ -103,6 +78,10 @@ public class SBT<T extends Comparable<T>> {
     }
     
     private Node<T> rebalance(Node<T> r) {
+        if(r == null) {
+            return r;
+        }
+        
         Node<T> tmp = r;
         updateHeight(tmp);
         int balance = getBalance(r);
@@ -135,7 +114,7 @@ public class SBT<T extends Comparable<T>> {
     }
     private Node<T> insert(Node<T> n, T key) {
         if(n == null) {
-            this.size++;
+            al.add(key);
             return new Node<>(key);
         }
         
@@ -154,6 +133,7 @@ public class SBT<T extends Comparable<T>> {
     
 // Delete
     public void remove(T val) {
+        al.remove(val);
         root = delete(root, val);
     }
     private Node<T> mostLeftChild(Node<T> node) {
@@ -175,78 +155,46 @@ public class SBT<T extends Comparable<T>> {
         else if(tmp.lessThan(key) || tmp.equal(key)) {
             tmp.setRight(delete(tmp.getRight(), key));
         }
-        else {
-            if((tmp.getLeft() == null) || (tmp.getRight() == null)) {
-                Node<T> temp = null;
-                
-                temp = temp == tmp.getLeft()? tmp.getRight() : tmp.getLeft();
-                if(temp == null) {
-                    temp = tmp;
-                    tmp = null;
-                }
-                else {
-                    tmp = temp;
-                }
+        
+        if(tmp.equal(key)) {
+            if(tmp.getLeft() == null || tmp.getRight() == null) {
+                tmp = (tmp.getLeft() == null) ? tmp.getRight() : tmp.getLeft();
             }
             else {
-                Node<T> temp = mostLeftChild(tmp.getRight());
-                tmp.setKey(temp.getKey());
-                tmp.setRight(delete(tmp.getRight(), temp.getKey()));
-                this.size--;
+                Node<T> mostLeftChild = mostLeftChild(tmp.getRight());
+                tmp.setKey(mostLeftChild.getKey());
+                tmp.setRight(delete(tmp.getRight(), tmp.getKey()));
             }
         }
-//        if(tmp.equal(key)) {
-//            if(tmp.getLeft() == null || tmp.getRight() == null) {
-//                tmp = (tmp.getLeft() == null) ? tmp.getRight() : tmp.getLeft();
-//            }
-//            else {
-//                Node<T> mostLeftChild = mostLeftChild(tmp.getRight());
-//                tmp.setKey(mostLeftChild.getKey());
-//                tmp.setRight(delete(tmp.getRight(), tmp.getKey()));
-//                this.size--;
-//            }
-//        }
 
-        // If the tree had only one node then return
-        if (tmp == null)
-            return tmp;
-
-        // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
-        tmp.setBLheight(max(height(tmp.getRight()), height(tmp.getLeft())) + 1);
-
-        // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether
-        // this node became unbalanced)
-        int balance = getBalance(tmp);
-
-        // If this node becomes unbalanced, then there are 4 cases
-        // Left Left Case
-        if (balance > 1 && getBalance(tmp.getLeft()) >= 0) {
-            return rotateR(tmp);
-        }
-
-        // Left Right Case
-        if (balance > 1 && getBalance(tmp.getLeft()) < 0)
-        {
-            tmp.setLeft(rotateL(tmp.getLeft()));
-            return rotateR(tmp);
-        }
-
-        // Right Right Case
-        if (balance < -1 && getBalance(tmp.getRight()) <= 0)
-            return rotateL(tmp);
-
-        // Right Left Case
-        if (balance < -1 && getBalance(tmp.getRight()) > 0)
-        {
-            tmp.setRight(rotateR(tmp.getRight()));
-            return rotateL(tmp);
-        }
-
-        return tmp;
+        return rebalance(tmp);
     }
     
-    private int max(int a, int b) {
-        return a > b? a : b;
+// Search
+    public void search(T key) {
+        Node<T> tmp = find(root, key);
+        
+        if(tmp == null) {
+            System.out.println("Not found");
+        }
+        else {
+            System.out.println(tmp.getKey());
+        }
+    }
+    private Node<T> find(Node<T> head, T key) {
+        if(head != null) {
+            if(head.equal(key)) {
+                return head;
+            }
+            else if(head.greaterThan(key)) {
+                return find(head.getLeft(), key);
+            }
+            else {
+                return find(head.getRight(), key);
+            }
+        }
+        
+        return null;
     }
     
 // Display

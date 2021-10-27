@@ -54,14 +54,17 @@ public class Node<T extends Comparable <T>> {
     }
     
 // Comparable
-    public boolean equal(T key) {
-        return this.key == key;
+    @SuppressWarnings("unchecked")
+    public boolean equal(Object key) {
+        return this.key.compareTo((T)key) == 0;
     }
-    public boolean greaterThan(T key) {
-        return this.key.compareTo(key) == 1;
+    @SuppressWarnings("unchecked")
+    public boolean greaterThan(Object key) {
+        return this.key.compareTo((T)key) >= 1;
     }
-    public boolean lessThan(T key) {
-        return this.key.compareTo(key) == -1;
+    @SuppressWarnings("unchecked")
+    public boolean lessThan(Object key) {
+        return this.key.compareTo((T)key) <= -1;
     }
     
     public void printKey() {

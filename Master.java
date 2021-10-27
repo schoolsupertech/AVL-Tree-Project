@@ -5,6 +5,8 @@
  */
 package MasterPackge;
 
+import java.io.IOException;
+
 /**
  *
  * @author EternityShiningJewel
@@ -12,8 +14,9 @@ package MasterPackge;
 public class Master {
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Manager manager = new Manager();
         
         while(true) {
@@ -30,7 +33,6 @@ public class Master {
                 case 2:
                     System.out.println("Delete Word");
                     manager.deleteWord();
-                    System.err.println("Done");
                     break;
                 case 3:
                     System.out.println("Search Word");
@@ -45,6 +47,7 @@ public class Master {
                     manager.showAll();
                     break;
                 case 6:
+//                    manager.saveFile(filename);
                     return;
             }
         }

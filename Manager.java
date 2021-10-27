@@ -1,6 +1,12 @@
 package MasterPackge;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -9,6 +15,16 @@ import java.io.File;
 public class Manager extends SBT<Dictionary> {
     
     public Manager() {}
+    
+    private int seekE(String value) {
+        for(int i = 0; i < this.size(); i++) {
+            if(this.get(i).getE_Word().equals(value)) {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
     
     public int menu(){
         System.out.println("\n================ Dictionary program ================");
@@ -24,14 +40,55 @@ public class Manager extends SBT<Dictionary> {
         return choice;
     }
     
-    public void loadFile(String filename){
+    public void loadFile(String filename) throws IOException{
         File f = new File(filename);
         
+        if(!f.exists()) {
+            f.createNewFile();
+        }
+        else {
+            try {
+                BufferedReader br;
+                try(FileReader fr = new FileReader(f)) {
+                     br = new BufferedReader(fr);
+                     String details;
+                     while((details = br.readLine()) != null) {
+                         StringTokenizer stk = new StringTokenizer(details, ";");
+                         while(stk.hasMoreTokens()) {
+                             String english = stk.nextToken();
+                             String vietnam = stk.nextToken();
+                             this.add(new Dictionary(english, vietnam));
+                         }
+                     }
+                }
+                br.close();
+            }
+            catch(IOException ex) {
+                System.out.println(ex);
+            }
+        }
     }
     
-    public void saveFile(String filename){
+    public void saveFile(String filename) throws IOException{
         File f = new File(filename);
-        
+        if(!f.exists()) {
+            f.createNewFile();
+        }
+        else {
+            try {
+                PrintWriter pw;
+                try(FileWriter fw = new FileWriter(f)) {
+                    pw = new PrintWriter(fw);
+                    for(int i = 0; i < this.size(); i++) {
+                        pw.println(this.get(i).getE_Word()+ ";"
+                                + this.get(i).getV_Word());
+                    }
+                }
+            }
+            catch(IOException ex) {
+                System.out.println(ex);
+            }
+        }
     }
     
     public void addWord(){
@@ -43,31 +100,44 @@ public class Manager extends SBT<Dictionary> {
     }
     
     public void deleteWord(){
-//        if(this.isEmpty()) {
-//            System.err.println("Empty List");
-//        }
-//        else {
-//            
-            this.add(new Dictionary("Dog", "cho"));
-            this.add(new Dictionary("Cat", "meo"));
-            this.add(new Dictionary("Bird", "chim"));
-            this.add(new Dictionary("Chicken", "ga"));
-            this.bftRecursion();
-            this.remove(new Dictionary("Chicken", "ga"));
-            this.bftRecursion();
-//        }
+        if(this.isEmpty()) {
+            System.err.println("Empty List");
+        }
+        else {
+            int pos;
+            
+            String english = Validation.getString("Enter new english word: "
+                , "Error: Please try again");
+            pos = seekE(english);
+            
+            if(pos < 0) {
+                System.err.println("Not Found");
+            }
+            else {
+                this.remove(this.get(pos));
+                System.err.println("Done");
+            }
+        }
     }
     
     public void searchWord(){
-//        if(this.isEmpty()) {
-//            System.err.println("Empty List");
-//        }
-//        else {
-//            
-//        }
-//            this.add(new Dictionary("cat", "meo"));
-//            this.add(new Dictionary("dog", "cho"));
-//            this.search(new Dictionary("dog", "cho"));
+        if(this.isEmpty()) {
+            System.err.println("Empty List");
+        }
+        else {
+            int pos;
+            
+            String english = Validation.getString("Enter english word need to find: "
+                    , "Error: Please try again");
+            pos = seekE(english);
+            
+            if(pos < 0) {
+                System.err.println("Not found");
+            }
+            else {
+                this.search(this.get(pos));
+            }
+        }
     }
     
     public void printWayNode(){
