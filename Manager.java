@@ -141,7 +141,21 @@ public class Manager extends SBT<Dictionary> {
     }
     
     public void printWayNode(){
+        int pos1, pos2;
+        String e1 = Validation.getString("Enter english word: "
+                , "Error: Please try again");
+        String e2 = Validation.getString("Enter english word: "
+                , "Error: Please try again");
         
+        pos1 = seekE(e1);
+        pos2 = seekE(e2);
+        
+        if(pos1 < 0 || pos2 < 0) {
+            System.out.println("Not found");
+        }
+        else {
+            this.print2Node(this.get(pos1), this.get(pos2));
+        }
     }
     
     public void showAll() {

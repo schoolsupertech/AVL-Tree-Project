@@ -6,6 +6,7 @@
 package MasterPackge;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  *
@@ -195,6 +196,58 @@ public class SBT<T extends Comparable<T>> {
         }
         
         return null;
+    }
+    
+// Print path between 2 nodes
+    public void print2Node(T val1, T val2) {
+        getPathBetween2Node(root, val1, val2);
+    }
+    private void getPathBetween2Node(Node<T> r, T val1, T val2) {
+        int intersection = -1;
+        int i = 0, j = 0;
+        
+        ArrayList<T> path1 = new ArrayList<>();
+        ArrayList<T> path2 = new ArrayList<>();
+        
+        getPath(r, path1, val1);
+        getPath(r, path2, val2);
+        
+        while(i != path1.size() || j != path2.size()) {
+            if(i == j && path1.get(i) == path2.get(j)) {
+                i++;
+                j++;
+            }
+            else {
+                intersection = j - 1;
+                break;
+            }
+        }
+        
+        for(i = path1.size()-1; i > intersection; i--) {
+            System.out.print(path1.get(i)+ " ");
+        }
+        for(i = intersection; i < path2.size(); i++) {
+            System.out.print(path2.get(i)+ " ");
+        }
+    }
+    private boolean getPath(Node<T> r, ArrayList<T> list, T val) {
+        if(r == null) {
+            return false;
+        }
+        
+        list.add(r.getKey());
+        
+        if(r.getKey() == val) {
+            return true;
+        }
+        
+        if(getPath(r.getLeft(), list, val) || getPath(r.getRight(), list, val)) {
+            return true;
+        }
+        
+        list.remove(list.size()-1);
+        
+        return false;
     }
     
 // Display
