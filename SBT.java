@@ -6,7 +6,6 @@
 package MasterPackge;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 /**
  *
@@ -213,6 +212,10 @@ public class SBT<T extends Comparable<T>> {
         getPath(r, path2, val2);
         
         while(i != path1.size() || j != path2.size()) {
+            if(i >= path1.size() || i >= path2.size()) {
+                intersection = j - 1;
+                break;
+            }
             if(i == j && path1.get(i) == path2.get(j)) {
                 i++;
                 j++;
